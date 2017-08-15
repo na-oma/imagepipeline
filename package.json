@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "imba": "gulp imba",
+    "resmushit": "gulp resmushit",
+    "resmushit_imagemin": "gulp resmushit_imagemin",
     "test": "gulp test",
     "start": "gulp default",
     "guetzli": "gulp guetzli",

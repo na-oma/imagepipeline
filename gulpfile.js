@@ -118,6 +118,20 @@ function returnSmallerFileFromTuple() {
 
 }
 
+
+gulp.task('resmushit', () =>
+    gulp.src('src/**/*.{jpg,png,jpeg,gif}')
+        .pipe(smushit({verbose: true}))
+	.pipe(gulp.dest('dist_resmushit'))
+);
+
+gulp.task('resmushit_imagemin', () =>
+    gulp.src('src/**/*.{jpg,png,jpeg,gif}')
+        .pipe(smushit({verbose: true}))
+        .pipe(imagemin({verbose: true}))
+	.pipe(gulp.dest('dist_resmushit_imagemin'))
+);
+
 gulp.task('test', function() {
     const first = gulp.src('src/**/*.{jpg,png}')
         .pipe(smushit({verbose: true}))
@@ -204,14 +218,34 @@ function comparatorPath(a, b) {
 gulp.task('imba', () => {
     const out = 'imba';
     const quality = 92;
-    //GIF
-    const gifStream = gulp.src('src/**/*.gif')
+
+    //////////////////GIF
+    const gifStreamSmushit = gulp.src('src/**/*.gif')
+        .pipe(sort())
+        .pipe(smushit({verbose: true}));
+    const gifStreamGifsicle = gulp.src('src/**/*.gif')
+        .pipe(sort())
         .pipe(imagemin([
                 imagemin.gifsicle({/*interlaced: true, */optimizationLevel: 3}),
             ],
-            {verbose: true}))
+            {verbose: true}));
+    const gifStreamSmushitGifsicle = gulp.src('src/**/*.gif')
+        .pipe(sort())
+        .pipe(smushit({verbose: true}))
+        .pipe(imagemin([
+                imagemin.gifsicle({/*interlaced: true, */optimizationLevel: 3}),
+            ],
+            {verbose: true}));
+    let tuples = TupleStream([gifStreamSmushit, gifStreamGifsicle], { comparator: comparatorPath });
+    let streamSmaller = tuples
+        .pipe(returnSmallerFileFromTuple());
+    tuples = TupleStream([streamSmaller, gifStreamSmushitGifsicle], { comparator: comparatorPath });
+    streamSmaller = tuples
+        .pipe(returnSmallerFileFromTuple());
+    const gifStream = streamSmaller
         .pipe(gulp.dest(out));
-    //SVG
+
+    //////////////////SVG
     const svgStream = gulp.src('src/**/*.svg')
         .pipe(imagemin([
                 imagemin.svgo({plugins: [
@@ -221,15 +255,15 @@ gulp.task('imba', () => {
             ],
             {verbose: true}))
         .pipe(gulp.dest(out));
-    //JPG
+
+    //////////////////JPG
     const streamSmushit = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
-//        .pipe(smushit({verbose: true}))
+        .pipe(smushit({verbose: true}))
         .pipe(imagemin([
                 imagemin.jpegtran({progressive: true}),
             ],
-            {verbose: true}))
-        .pipe(sort());
+            {verbose: true}));
     const streamGuetzli = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
         .pipe(imagemin([
@@ -239,8 +273,7 @@ gulp.task('imba', () => {
         .pipe(imagemin([
                 imagemin.jpegtran({progressive: true}),
             ],
-            {verbose: true}))
-        .pipe(sort());
+            {verbose: true}));
     const streamMoz = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
         .pipe(imagemin([
@@ -250,40 +283,47 @@ gulp.task('imba', () => {
         .pipe(imagemin([
                 imagemin.jpegtran({progressive: true}),
             ],
-            {verbose: true}))
-        .pipe(sort());
+            {verbose: true}));
 
-    let tuples = TupleStream([streamSmushit, streamGuetzli], { comparator: comparatorPath });
-    let streamSmaller = tuples
+    tuples = TupleStream([streamSmushit, streamGuetzli], { comparator: comparatorPath });
+    streamSmaller = tuples
         .pipe(returnSmallerFileFromTuple());
     tuples = TupleStream([streamSmaller, streamMoz], { comparator: comparatorPath });
-    const jpgStream = tuples
-        .pipe(returnSmallerFileFromTuple())
+    streamSmaller = tuples
+        .pipe(returnSmallerFileFromTuple());
+    const jpgStream = streamSmaller
         .pipe(gulp.dest(out));
 
-    //PNG
+    //////////////////PNG
     const streamZopfliOpti = gulp.src('src/**/*.png')
         .pipe(sort())
-//        .pipe(smushit({verbose: true}))
         .pipe(imagemin([
 //                imageminPngout({ strategy: 0 }),
                 imageminZopfli({more: true}),
                 imagemin.optipng({optimizationLevel: 7}),
             ],
-            {verbose: true}))
-        .pipe(sort());
-    const streamQuant = gulp.src('src/**/*.png')
+            {verbose: true}));
+    const streamQuantZopfliOpti = gulp.src('src/**/*.png')
         .pipe(sort())
         .pipe(imagemin([
                 imageminPngquant({quality: quality-15, speed: 1, verbose: true}),
-//                imageminPngout({ strategy: 0 }),
                 imageminZopfli({more: true}),
                 imagemin.optipng({optimizationLevel: 7}),
             ],
-            {verbose: true}))
-        .pipe(sort());
+            {verbose: true}));
+    const streamSmushitZopfliOpti = gulp.src('src/**/*.png')
+        .pipe(sort())
+        .pipe(smushit({verbose: true}))
+        .pipe(imagemin([
+                imageminZopfli({more: true}),
+                imagemin.optipng({optimizationLevel: 7}),
+            ],
+            {verbose: true}));
 
-    tuples = TupleStream([streamZopfliOpti, streamQuant], { comparator: comparatorPath });
+    tuples = TupleStream([streamZopfliOpti, streamQuantZopfliOpti], { comparator: comparatorPath });
+    streamSmaller = tuples
+        .pipe(returnSmallerFileFromTuple());
+    tuples = TupleStream([streamSmaller, streamSmushitZopfliOpti], { comparator: comparatorPath });
     streamSmaller = tuples
         .pipe(returnSmallerFileFromTuple());
     const pngStream = streamSmaller
