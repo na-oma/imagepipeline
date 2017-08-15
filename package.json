@@ -1,0 +1,44 @@
+{
+  "name": "resmush",
+  "version": "1.0.0",
+  "description": "Convert some images via resmushit",
+  "main": "index.js",
+  "scripts": {
+    "imba": "gulp imba",
+    "test": "gulp test",
+    "start": "gulp default",
+    "guetzli": "gulp guetzli",
+    "zopfli": "gulp zopfli",
+    "svg": "gulp svg",
+    "giflossy": "gulp giflossy",
+    "gifsicle": "gulp gifsicle",
+    "jpg100x": "gulp jpg100x"
+  },
+  "keywords": [
+    "resmushit"
+  ],
+  "author": "Sven Fischer",
+  "license": "ISC",
+  "devDependencies": {
+    "event-stream": "^3.3.4",
+    "gulp": "^3.9.1",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^3.3.0",
+    "gulp-noop": "^1.0.0",
+    "gulp-print": "^2.0.1",
+    "gulp-smushit": "^1.2.0",
+    "gulp-snapshot": "^1.0.0",
+    "gulp-sort": "^2.0.0",
+    "gulp-util": "^3.0.8",
+    "imagemin-giflossy": "^5.1.10",
+    "imagemin-guetzli": "^1.0.0",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-pngout": "^2.0.0",
+    "imagemin-pngquant": "^5.0.1",
+    "imagemin-zopfli": "^5.1.0",
+    "map-stream": "0.0.7",
+    "merge-stream": "^1.0.1",
+    "through2": "^2.0.3",
+    "tuple-stream2": "^2.0.0"
+  }
+}

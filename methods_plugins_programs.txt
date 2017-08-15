@@ -1,0 +1,41 @@
+PNG (see https://css-ig.net/png-tools-overview.php)
+	pngout				lossless, good
+	zopfli				lossless
+	optipng				lossless
+	pngquant			lossy
+	pngcrush			lossless
+	advpng				lossless, bad
+	optipng-interlaced		optipng+interlaced
+	
+	Pipelines:
+		-smushit		pngout	zopfli	optipng
+		-smushit		zopfli	optipng	pngout
+		-smushit		optipng	pngout	zopfli
+		-pngout	zopfli	optipng
+		-zopfli	optipng	pngout
+		-optipng	pngout	zopfli
+JPG
+	guetzli		lossy
+	mozjpeg		both
+	jpeg-recompress	lossy
+	jpegoptim	both
+	jpegtran	lossless
+
+	Pipelines:
+		-smushit	jpgtran progressive
+		-guetzli	jpgtran progressive
+		-mozjpg		jpgtran progressive
+		-jpgtran progressive
+GIF
+	gifsicle	both
+	giflossy	both (does not install)
+
+	Pipelines:
+		-smushit	gifsicle
+		-gifsicle
+SVG
+	imagemin-svgo	maybe lossy
+
+WEBP
+	gif2webp
+	webp
