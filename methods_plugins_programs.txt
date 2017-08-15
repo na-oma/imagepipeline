@@ -8,6 +8,8 @@ PNG (see https://css-ig.net/png-tools-overview.php)
 	optipng-interlaced		optipng+interlaced
 	
 	Pipelines:
+		-pngquant wenn smushit nit geht...
+		-pngout geht auch ned...
 		-smushit		pngout	zopfli	optipng
 		-smushit		zopfli	optipng	pngout
 		-smushit		optipng	pngout	zopfli
