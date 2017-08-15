@@ -205,14 +205,14 @@ gulp.task('imba', () => {
     const out = 'imba';
     const quality = 92;
     //GIF
-    const gifStream = gulp.src('src_/**/*.gif')
+    const gifStream = gulp.src('src/**/*.gif')
         .pipe(imagemin([
                 imagemin.gifsicle({/*interlaced: true, */optimizationLevel: 3}),
             ],
             {verbose: true}))
         .pipe(gulp.dest(out));
     //SVG
-    const svgStream = gulp.src('src_/**/*.svg')
+    const svgStream = gulp.src('src/**/*.svg')
         .pipe(imagemin([
                 imagemin.svgo({plugins: [
                     /*{convertShapeToPath: false},*/
@@ -222,7 +222,7 @@ gulp.task('imba', () => {
             {verbose: true}))
         .pipe(gulp.dest(out));
     //JPG
-    const streamSmushit = gulp.src('src_/**/*.{jpg,jpeg}')
+    const streamSmushit = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
 //        .pipe(smushit({verbose: true}))
         .pipe(imagemin([
@@ -230,7 +230,7 @@ gulp.task('imba', () => {
             ],
             {verbose: true}))
         .pipe(sort());
-    const streamGuetzli = gulp.src('src_/**/*.{jpg,jpeg}')
+    const streamGuetzli = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
         .pipe(imagemin([
                 imageminGuetzli({quality: quality})
@@ -241,7 +241,7 @@ gulp.task('imba', () => {
             ],
             {verbose: true}))
         .pipe(sort());
-    const streamMoz = gulp.src('src_/**/*.{jpg,jpeg}')
+    const streamMoz = gulp.src('src/**/*.{jpg,jpeg}')
         .pipe(sort())
         .pipe(imagemin([
                 imageminMozjpeg({quality: quality})
@@ -262,7 +262,7 @@ gulp.task('imba', () => {
         .pipe(gulp.dest(out));
 
     //PNG
-    const streamZopfliOpti = gulp.src('src_/**/*.png')
+    const streamZopfliOpti = gulp.src('src/**/*.png')
         .pipe(sort())
 //        .pipe(smushit({verbose: true}))
         .pipe(imagemin([
@@ -272,7 +272,7 @@ gulp.task('imba', () => {
             ],
             {verbose: true}))
         .pipe(sort());
-    const streamQuant = gulp.src('src_/**/*.png')
+    const streamQuant = gulp.src('src/**/*.png')
         .pipe(sort())
         .pipe(imagemin([
                 imageminPngquant({quality: quality-15, speed: 1, verbose: true}),
