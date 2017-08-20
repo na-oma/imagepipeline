@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "imba": "gulp imba",
+    "webp": "gulp webp",
     "resmushit": "gulp resmushit",
     "resmushit_imagemin": "gulp resmushit_imagemin",
     "test": "gulp test",
@@ -37,6 +38,7 @@
     "imagemin-mozjpeg": "^6.0.0",
     "imagemin-pngout": "^2.0.0",
     "imagemin-pngquant": "^5.0.1",
+    "imagemin-webp": "^4.0.0",
     "imagemin-zopfli": "^5.1.0",
     "map-stream": "0.0.7",
     "merge-stream": "^1.0.1",

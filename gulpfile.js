@@ -23,6 +23,7 @@ const imageminGuetzli = require('imagemin-guetzli');
 const imageminGiflossy = require('imagemin-giflossy');
 const imageminPngout = require('imagemin-pngout');
 const imageminPngquant = require('imagemin-pngquant');
+const imageminWebp = require('imagemin-webp');
 
 gulp.task('default', function () {
     gutil.log('Gulp is running!')
@@ -130,6 +131,15 @@ gulp.task('resmushit_imagemin', () =>
         .pipe(smushit({verbose: true}))
         .pipe(imagemin({verbose: true}))
 	.pipe(gulp.dest('dist_resmushit_imagemin'))
+);
+
+gulp.task('webp', () =>
+    gulp.src('src/**/*.{jpg,png,jpeg,gif,svg}')/*will only copy gif and svg*/
+        .pipe(imagemin([
+		imageminWebp({quality: 92, method: 6, /*lossless: true,*/}),
+		],
+		{verbose: true}))
+	.pipe(gulp.dest('dist_webp'))
 );
 
 gulp.task('test', function() {
