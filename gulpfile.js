@@ -24,6 +24,7 @@ const imageminGiflossy = require('imagemin-giflossy');
 const imageminPngout = require('imagemin-pngout');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminWebp = require('imagemin-webp');
+const ext = require('gulp-ext');
 
 gulp.task('default', function () {
     gutil.log('Gulp is running!')
@@ -134,11 +135,12 @@ gulp.task('resmushit_imagemin', () =>
 );
 
 gulp.task('webp', () =>
-    gulp.src('src/**/*.{jpg,png,jpeg,gif,svg}')/*will only copy gif and svg*/
+    gulp.src('src/**/*.{jpg,png,jpeg}')//only works on jpg and png
         .pipe(imagemin([
 		imageminWebp({quality: 92, method: 6, /*lossless: true,*/}),
 		],
 		{verbose: true}))
+	.pipe(ext.replace('webp', 'png|jpg|jpeg'))
 	.pipe(gulp.dest('dist_webp'))
 );
 

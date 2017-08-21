@@ -25,6 +25,7 @@
   "devDependencies": {
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
+    "gulp-ext": "^1.0.0",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^3.3.0",
     "gulp-noop": "^1.0.0",
