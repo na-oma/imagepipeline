@@ -25,6 +25,8 @@ const imageminPngout = require('imagemin-pngout');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminWebp = require('imagemin-webp');
 const ext = require('gulp-ext');
+const debug = require('gulp-debug');
+const tuple = require('tuple-stream');
 
 gulp.task('default', function () {
     gutil.log('Gulp is running!')
@@ -102,17 +104,19 @@ function returnSmallerFileFromTuple() {
     //}
 
 //TODO: make usable for streams and buffers
-    console.log(file[0].path + ": " + file[0].contents.length);
-    console.log(file[1].path + ": " + file[1].contents.length);
+    //console.log(file[0]);
+    //console.log(file[1]);
+    //console.log(file[0].path + ": " + file[0].contents.length);
+    //console.log(file[1].path + ": " + file[1].contents.length);
 
     if (file[0].contents.length == file[1].contents.length) {
-        console.log("file 0 equal");
+        //console.log("file 0 equal");
         cb(null, file[0]);
     } else if (file[0].contents.length <= file[1].contents.length) {
-        console.log("file 0 smaller");
+        //console.log("file 0 smaller");
         cb(null, file[0]);
     } else {
-        console.log("file 1 smaller");
+        //console.log("file 1 smaller");
         cb(null, file[1]);
     }
 
@@ -120,6 +124,41 @@ function returnSmallerFileFromTuple() {
 
 }
 
+function skipIfSecondSmallerOrEqualFileFromTuple() {
+
+  // Creating a stream through which each file will pass
+  return through.obj(function(file, enc, cb) {
+//    if (file.isNull()) {
+      // return empty file
+//      return cb(null, file);
+//    }
+    //if (file.isBuffer()) {
+      //file.contents = Buffer.concat([prefixText, file.contents]);
+    //}
+    //if (file.isStream()) {
+      //file.contents = file.contents.pipe(prefixStream(prefixText));
+    //}
+
+//TODO: make usable for streams and buffers
+    //console.log(file[0]);
+    //console.log(file[1]);
+    //console.log(file[0].path + ": " + file[0].contents.length);
+    //console.log(file[1].path + ": " + file[1].contents.length);
+
+    if (file[0].contents.length == file[1].contents.length) {
+        console.log("file 0 equal");
+        cb(null, null);
+    } else if (file[0].contents.length <= file[1].contents.length) {
+        console.log("file 0 smaller");
+        cb(null, file[0]);
+    } else {
+        console.log("file 1 smaller");
+        cb(null, null);
+    }
+
+  });
+
+}
 
 gulp.task('resmushit', () =>
     gulp.src('src/**/*.{jpg,png,jpeg,gif}')
@@ -132,16 +171,6 @@ gulp.task('resmushit_imagemin', () =>
         .pipe(smushit({verbose: true}))
         .pipe(imagemin({verbose: true}))
 	.pipe(gulp.dest('dist_resmushit_imagemin'))
-);
-
-gulp.task('webp', () =>
-    gulp.src('src/**/*.{jpg,png,jpeg}')//only works on jpg and png
-        .pipe(imagemin([
-		imageminWebp({quality: 92, method: 6, /*lossless: true,*/}),
-		],
-		{verbose: true}))
-	.pipe(ext.replace('webp', 'png|jpg|jpeg'))
-	.pipe(gulp.dest('dist_webp'))
 );
 
 gulp.task('test', function() {
@@ -217,6 +246,32 @@ gulp.task('gifsicle', () =>
             {verbose: true}))
         .pipe(gulp.dest('dist_gif'))
 );
+
+
+gulp.task('webp', () => {
+    const webpFiles = gulp.src('src/**/*.{jpg,png,jpeg}')//only works on jpg and png
+        .pipe(sort())
+        .pipe(imagemin([
+		imageminWebp({quality: 92, method: 6, preset: 'text', /*lossless: true,*/}),
+		],
+		{verbose: true}))
+        .pipe(sort())
+	.pipe(ext.append('webp'))
+	//.pipe(gulp.dest('dist_webp'))
+	//.pipe(debug({title: 'webp:'}))
+
+    const imbaFiles = gulp.src('imba/**/*.{jpg,png,jpeg}')
+        .pipe(sort())
+	//.pipe(debug({title: 'imba:'}))
+
+    let tuples = tuple(webpFiles, imbaFiles);
+    let streamSmaller = tuples
+        .pipe(skipIfSecondSmallerOrEqualFileFromTuple())
+	.pipe(gulp.dest('dist_webp'));
+
+    return merge(tuples);
+    //return merge(webpFiles, imbaFiles);
+});
 
 function comparatorPath(a, b) {
     if (!a || !a.path)
